@@ -61,31 +61,11 @@ class Crawler
             content.css("li.movie_list_item").each do |item|
                 rating = item.css("span.star-rating-small")[0]["title"].to_s[/Nota:\ (.*?)\ estrela/m, 1].to_f
                 title  = item.css("img.lazyload")[0]["alt"].to_s[/\((.*?)\)/m, 1]
-                title = "PQP"  if unless.match(/^p{L}&&[a-zA-Z0-9_\-+ ]*$/)
                 csv << [title, rating]
                 puts "Adding |#{title}, rating #{rating}| to your file"
             end
         end
-
-
-        # puts movie.to_s.match(/\(([^)]+)\)/)[1]
     end
-
-    # def info_from_page(pks)
-    #     pks.each do |pk|
-    #         page = HTTParty.get("https://filmow.com/async/tooltip/movie/?movie_pk=#{pk.to_s}")
-    #         rows = []
-    #         rows << [page["movie"]["title_orig"], 5]
-    #         puts "Adding '#{page["movie"]["title_orig"]}' to your file"
-    #         CSV.open(@file, "ab") do |csv|
-    #             rows.each do |row|
-    #                 csv << row
-    #             end
-    #         end
-    #         # page_html = Nokogiri::HTML(page["movie"]["html"])
-    #         # info << page
-    #     end
-    # end
 
     result = Crawler.new
 
