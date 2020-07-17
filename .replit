@@ -1,0 +1,2 @@
+language = "ruby"
+run = "bundle exec ruby lib/crawler.rb"
