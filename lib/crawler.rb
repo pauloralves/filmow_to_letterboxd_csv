@@ -1,7 +1,8 @@
 require 'colorize'
-require "csv"
+require 'csv'
 require 'nokogiri'
 require 'httparty'
+require 'byebug'
 
 class Crawler
     def initialize
@@ -13,13 +14,13 @@ class Crawler
         user_entry[:options].each do |option|
             @file = "#{File.expand_path File.dirname(__FILE__)}/#{user_entry[:username]}_#{option[0]}"
 
-            CSV.open(@file, "w") do |csv|
-                csv << ["Title", "Year", "Rating", "WatchedDate"]
+            CSV.open(@file, 'w') do |csv|
+                csv << ['Title', 'Director', 'Year', 'Rating', 'WatchedDate']
             end
 
-            crawl_pages("filmes", option[1])
-            crawl_pages("curtas", option[1])
-            crawl_pages("tv", option[1])
+            crawl_pages('filmes', option[1])
+            crawl_pages('curtas', option[1])
+            crawl_pages('tv', option[1])
         end
         puts "TOTAL EXECUTION TIME: #{Time.now - init_time} seconds".light_black
         puts "That's it!\nAll information was saved on your .csv file(s).".light_green
@@ -30,35 +31,33 @@ class Crawler
         puts "Please type the account username.\nFor example, for 'https://filmow.com/usuario/abc_123', just enter abc_123".light_magenta
         response[:username] = gets.chomp
         #stop execution in case of empty string
-        abort "ERROR - No username.".red if response[:username].empty?
+        abort 'ERROR - No username.'.red if response[:username].empty?
 
-        summary_text = "Thank you.\nWait while information from #{response[:username]} are extracted."
-
-        puts "Type 1 for WATCHED OR\ Type 2 for WATCHLIST OR Type 3 for BOTH".light_magenta
+        puts 'TYPE 1 for WATCHED OR TYPE 2 for WATCHLIST OR TYPE 3 for BOTH'.light_magenta
         case gets.chomp
-        when "1"
-            response[:options] = [["watched.csv", "ja-vi"]]
-        when "2"
-            response[:options] = [["watchlist.csv", "quero-ver"]]
-        when "3"
-            response[:options] = [["watched.csv", "ja-vi"], ["watchlist.csv", "quero-ver"]]
+        when '1'
+            response[:options] = [['watched.csv', 'ja-vi']]
+        when '2'
+            response[:options] = [['watchlist.csv', 'quero-ver']]
+        when '3'
+            response[:options] = [['watched.csv', 'ja-vi'], ['watchlist.csv', 'quero-ver']]
         else
             #stop execution in case of invalid option
-            abort "ERROR - Option not valid".red
+            abort 'ERROR - Option not valid'.red
         end
 
-        puts "Would you like to create Diary entries with date of today for each movie? (It helps keeping track of future rewatcheds)\ny/n".light_magenta
+        puts 'Would you like to create Diary entries with date of today for each movie? (It helps keeping track of future rewatcheds)\ny/'.light_magenta
         case gets.chomp
-        when "y"
+        when 'y'
             response[:diary] = true
-        when "n"
+        when 'n'
             response[:diary] = false
         else
             #stop execution in case of invalid option
-            abort "ERROR - Option not valid".red
+            abort 'ERROR - Option not valid'.red
         end
 
-        puts summary_text.light_green
+        puts "Thank you.\nWait while information from #{response[:username]} is extracted.".light_green
 
         response
     end
@@ -68,10 +67,10 @@ class Crawler
     end
 
     def get_number_of_pages(content)
-        if content.css(".icon-double-angle-right").xpath("../@href").any?
-            return content.css(".icon-double-angle-right").xpath("../@href").to_s.split("pagina\=").last.to_i
-        elsif content.css("#next-page").any?
-            return content.css(".pagination-centered").xpath(".//a[@href]")[-2].text.to_i
+        if content.css('.icon-double-angle-right').xpath('../@href').any?
+            return content.css('.icon-double-angle-right').xpath('../@href').to_s.split("pagina\=").last.to_i
+        elsif content.css('#next-page').any?
+            return content.css('.pagination-centered').xpath('.//a[@href]')[-2].text.to_i
         else
             return 1
         end     
@@ -92,32 +91,36 @@ class Crawler
     end
 
     def add_to_csv(content)
-        CSV.open(@file, "ab") do |csv|
-            content.css("li.movie_list_item").each do |item|
+        CSV.open(@file, 'ab') do |csv|
+            content.css('li.movie_list_item').each do |item|
                 rating = nil
                 year   = nil
 
-                if item.css("span.star-rating-small").any?
-                    rating = item.css("span.star-rating-small")[0]["title"].to_s[/Nota:\ (.*?)\ estrela/m, 1].to_f
+                if item.css('span.star-rating-small').any?
+                    rating = item.css('span.star-rating-small')[0]['title'].to_s[/Nota:\ (.*?)\ estrela/m, 1].to_f
                 end
 
-                title  = item.css("img.lazyload")[0]["alt"].to_s[/\((.*?)\)/m, 1]
+                title  = item.css('img.lazyload')[0]['alt'].to_s[/\((.*?)\)/m, 1]
 
-                pk = item["data-movie-pk"]
-                year = get_year(pk)
+                pk = item['data-movie-pk']
+                page_html = get_pk_link_html(pk)
 
-                diary_date = @create_diary_entry ? Time.now.strftime("%Y-%m-%d") : nil
+                year = page_html.css("div.shortcut-movie-details").css("/div")[1].text[/: (.*?)\n/m, 1][-4..-1]
 
-                csv << [title, year, rating, diary_date]
+                director = page_html.css("div.shortcut-movie-details").css("/div")[2].text[/: (.*?)\n/m, 1]
 
-                puts "ADDING | #{title}, YEAR #{year.nil? ? '-' : year}, RATING #{rating.nil? ? '-' : rating} |".light_yellow
+                diary_date = @create_diary_entry ? Time.now.strftime('%Y-%m-%d') : nil
+
+                csv << [title, director, year, rating, diary_date]
+
+                puts "|ADDING #{title} |DIRECTOR #{director} |YEAR #{year.nil? ? '-' : year} |RATING #{rating.nil? ? '-' : rating} |".light_yellow
             end
         end
     end
 
-    def get_year(pk)
+    def get_pk_link_html(pk)
         page = HTTParty.get("https://filmow.com/async/tooltip/movie/?movie_pk=#{pk}")
-        page["html"][/Mundial:\ <\/b>(.*?)\n/m, 1]
+        Nokogiri::HTML(page['html'])
     end
 
     result = Crawler.new
