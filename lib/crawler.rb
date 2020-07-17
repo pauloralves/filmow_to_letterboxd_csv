@@ -2,7 +2,6 @@ require 'colorize'
 require 'csv'
 require 'nokogiri'
 require 'httparty'
-require 'byebug'
 
 class Crawler
     def initialize
@@ -46,7 +45,7 @@ class Crawler
             abort 'ERROR - Option not valid'.red
         end
 
-        puts 'Would you like to create Diary entries with date of today for each movie? (It helps keeping track of future rewatcheds)\ny/'.light_magenta
+        puts "Would you like to create Diary entries with date of today for each movie? (It helps keeping track of future rewatcheds)\ny/n".light_magenta
         case gets.chomp
         when 'y'
             response[:diary] = true
