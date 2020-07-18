@@ -13,6 +13,7 @@
 
 **Enjoy.**
 
+---
 > ### INSTRUCTIONS
 
 ***Pick one of these 3 different approaches***
@@ -34,6 +35,7 @@
 
 **3. If you can't make it work, just <a href="https://twitter.com/paulo_fii" target="_blank">ask me</a> and I can run it and send you the csv files.**
 
+---
 > ### LINKS AND REFERENCES
 
 - <a href="https://letterboxd.com/about/importing-data/" target="_blank">**Letterboxd instructions**</a>
