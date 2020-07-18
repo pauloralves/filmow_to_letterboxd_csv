@@ -102,11 +102,15 @@ class Crawler
                 title  = item.css('img.lazyload')[0]['alt'].to_s[/\((.*?)\)/m, 1]
 
                 pk = item['data-movie-pk']
-                page_html = get_pk_link_html(pk)
+                pk_page = get_pk_link(pk)
 
-                year = page_html.css("div.shortcut-movie-details").css("/div")[1].text[/: (.*?)\n/m, 1][-4..-1]
+                info_divs = pk_page[:html].css("div.shortcut-movie-details").css("/div")
 
-                director = page_html.css("div.shortcut-movie-details").css("/div")[2].text[/: (.*?)\n/m, 1]
+                year = info_divs[1].text[/: (.*?)\n/m, 1][-4..-1]
+
+                director = info_divs[2].text[/: (.*?)\n/m, 1]
+
+                title  = pk_page[:movie]['title_orig']
 
                 diary_date = @create_diary_entry ? Time.now.strftime('%Y-%m-%d') : nil
 
@@ -117,9 +121,9 @@ class Crawler
         end
     end
 
-    def get_pk_link_html(pk)
+    def get_pk_link(pk)
         page = HTTParty.get("https://filmow.com/async/tooltip/movie/?movie_pk=#{pk}")
-        Nokogiri::HTML(page['html'])
+        { html: Nokogiri::HTML(page['html']), movie: page['movie'] }
     end
 
     result = Crawler.new
