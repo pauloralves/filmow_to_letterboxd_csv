@@ -4,7 +4,7 @@
 
 ### Creates CSV files (Letterboxd import format) with data from a Filmow profile.
 
-> ## Features
+> ## FEATURES
 * You can choose between creating a "watched" file (já vi), a "watchlist" file (quero ver) or BOTH.
 
 * You can also choose if you want to create a diary entry for each watched movie (it'll help if you want to log new diary entries in the future for rewatched movies)
@@ -13,7 +13,7 @@
 
 **Enjoy.**
 
-> ## Instructions
+> ## INSTRUCTIONS
 
 ***Pick one of these 3 different approaches***
 
@@ -34,7 +34,7 @@
 
 **3. If you can't make it work, just <a href="https://twitter.com/paulo_fii" target="_blank">ask me</a> and I can run it and send you the csv files.**
 
-> ## Links and references
+> ## LINKS AND REFERENCES
 
 - <a href="https://letterboxd.com/about/importing-data/" target="_blank">**Letterboxd instructions**</a>
 - <a href="https://letterboxd.com/import/" target="_blank">**Import WATCHED films here**</a>
