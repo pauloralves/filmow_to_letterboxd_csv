@@ -91,33 +91,38 @@ class Crawler
 
     def add_to_csv(content)
         CSV.open(@file, 'ab') do |csv|
+            threads = []
+
             content.css('li.movie_list_item').each do |item|
-                rating = nil
-                year   = nil
+                threads << Thread.new do
+                    rating = nil
+                    year   = nil
 
-                if item.css('span.star-rating-small').any?
-                    rating = item.css('span.star-rating-small')[0]['title'].to_s[/Nota:\ (.*?)\ estrela/m, 1].to_f
+                    if item.css('span.star-rating-small').any?
+                        rating = item.css('span.star-rating-small')[0]['title'].to_s[/Nota:\ (.*?)\ estrela/m, 1].to_f
+                    end
+
+                    title  = item.css('img.lazyload')[0]['alt'].to_s[/\((.*?)\)/m, 1]
+
+                    pk = item['data-movie-pk']
+                    pk_page = get_pk_link(pk)
+
+                    info_divs = pk_page[:html].css("div.shortcut-movie-details").css("/div")
+
+                    year = info_divs[1].text[/: (.*?)\n/m, 1][-4..-1]
+
+                    director = info_divs[2].text[/: (.*?)\n/m, 1]
+
+                    title  = pk_page[:movie]['title_orig']
+
+                    diary_date = @create_diary_entry ? Time.now.strftime('%Y-%m-%d') : nil
+
+                    csv << [title, director, year, rating, diary_date]
+
+                    puts "|ADDING #{title} |DIRECTOR #{director} |YEAR #{year.nil? ? '-' : year} |RATING #{rating.nil? ? '-' : rating} |".light_yellow
                 end
-
-                title  = item.css('img.lazyload')[0]['alt'].to_s[/\((.*?)\)/m, 1]
-
-                pk = item['data-movie-pk']
-                pk_page = get_pk_link(pk)
-
-                info_divs = pk_page[:html].css("div.shortcut-movie-details").css("/div")
-
-                year = info_divs[1].text[/: (.*?)\n/m, 1][-4..-1]
-
-                director = info_divs[2].text[/: (.*?)\n/m, 1]
-
-                title  = pk_page[:movie]['title_orig']
-
-                diary_date = @create_diary_entry ? Time.now.strftime('%Y-%m-%d') : nil
-
-                csv << [title, director, year, rating, diary_date]
-
-                puts "|ADDING #{title} |DIRECTOR #{director} |YEAR #{year.nil? ? '-' : year} |RATING #{rating.nil? ? '-' : rating} |".light_yellow
             end
+            threads.map(&:join)
         end
     end
 
