@@ -62,7 +62,7 @@ class Crawler
     end
 
     def page_content(url)
-        page = Nokogiri::HTML(HTTParty.get(url))
+        Nokogiri::HTML(HTTParty.get(url))
     end
 
     def get_number_of_pages(content)
@@ -80,7 +80,7 @@ class Crawler
         number_of_pages = get_number_of_pages(content)
 
         puts "Extracting #{type} from #{number_of_pages} pages".cyan
-        pks = []
+
         (1..number_of_pages).each do |page|
             puts "Going through page #{page}...".light_blue
             content = page_content("#{@base_url}/#{type}/#{option}/?pagina=#{page}")
@@ -126,5 +126,5 @@ class Crawler
         { html: Nokogiri::HTML(page['html']), movie: page['movie'] }
     end
 
-    result = Crawler.new
+    Crawler.new
 end
