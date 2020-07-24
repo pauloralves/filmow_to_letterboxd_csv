@@ -1,2 +1,2 @@
 language = "ruby"
-run = "bundle exec ruby lib/crawler.rb"
+run = "bundle exec ruby -W0 lib/crawler.rb"
