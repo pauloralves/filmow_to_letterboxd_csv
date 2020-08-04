@@ -28,9 +28,10 @@ class Crawler
     def get_user_entry
         response = {}
         puts "Please type the account username.\nFor example, for 'https://filmow.com/usuario/abc_123', just enter abc_123".light_magenta
-        response[:username] = gets.chomp
+        response[:username] = gets.chomp.split('filmow.com/usuario').last.gsub('/', '')
+        puts response[:username]
         #stop execution in case of empty string
-        abort 'ERROR - No username.'.red if response[:username].empty?
+        abort 'ERROR - Invalid username.'.red if response[:username].empty?
 
         puts 'TYPE 1 for WATCHED OR TYPE 2 for WATCHLIST OR TYPE 3 for BOTH'.light_magenta
         case gets.chomp
