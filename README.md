@@ -27,7 +27,7 @@
 - Unzip the downloaded folder.
 - The .csv file(s) will be on the lib folder.
 
-***SOMETIMES THE CSV FILES MIGHT NOT COME WITH THE ZIP.
+- ***SOMETIMES THE CSV FILES MIGHT NOT COME WITH THE ZIP.
 JUST DOWNLOAD IT AGAIN AND THEY SHOULD BE THERE.***
 
 **2. Run on your machine. Recommended for those who have ruby installed or want to install it**
