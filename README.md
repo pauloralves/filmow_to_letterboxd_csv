@@ -21,14 +21,11 @@
 **1. Simply run it online (no installations, no heavy downloads)**
 - Go to https://repl.it/github/pauloralves/filmow_to_letterboxd_csv.
 - Click the `RUN` button, once it's available. 
-- Wait until a pink message appears. Answer the questions and hit ENTER after each one.
-- Wait until the process is finished. A green message will appear.
-- Next, on the left side of the screen, near 'Folders', click on the three dots and Download as zip.
-- Unzip the downloaded folder.
-- The .csv file(s) will be on the lib folder.
-
-- ***SOMETIMES THE CSV FILES MIGHT NOT COME WITH THE ZIP.
-JUST DOWNLOAD IT AGAIN AND THEY SHOULD BE THERE.***
+- Wait until a pink message appears (it should take some minutes).
+- Answer the questions and hit ENTER after each one.
+- Wait until the process is finished.
+- A green message will appear with the download link.
+- Access the link and download the CSV file's.
 
 **2. Run on your machine. Recommended for those who have ruby installed or want to install it**
 - https://www.ruby-lang.org/en/documentation/installation/
@@ -41,6 +38,6 @@ JUST DOWNLOAD IT AGAIN AND THEY SHOULD BE THERE.***
 ---
 > ### LINKS AND REFERENCES
 
-- <a href="https://letterboxd.com/about/importing-data/" target="_blank">**Letterboxd instructions**</a>
+- <a href="https://letterboxd.com/about/importing-data/" target="_blank">**Letterboxd instructions for importing data**</a>
 - <a href="https://letterboxd.com/import/" target="_blank">**Import WATCHED films here**</a>
 - <a href="https://letterboxd.com/watchlist/" target="_blank">**Import WATCHLIST here**</a>
