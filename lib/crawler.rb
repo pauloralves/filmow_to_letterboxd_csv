@@ -10,6 +10,9 @@ class Crawler
         @base_url = "https://filmow.com/usuario/#{user_entry[:username]}"
 
         @create_diary_entry = user_entry[:diary]
+
+        @transfer_data = initialize_transfer
+
         user_entry[:options].each do |option|
             @file = "#{File.expand_path File.dirname(__FILE__)}/#{user_entry[:username]}_#{option[0]}"
 
@@ -20,9 +23,15 @@ class Crawler
             crawl_pages('filmes', option[1])
             crawl_pages('curtas', option[1])
             crawl_pages('tv', option[1])
+
+            add_file_transfer
         end
+
+        download_link = complete_transfer
+
         puts "TOTAL EXECUTION TIME: #{Time.now - init_time} seconds".light_black
-        puts "That's it!\nAll information was saved on your .csv file(s).".light_green
+        puts "All information was saved on your .csv file(s).".light_green
+        puts "DOWNLOAD HERE: #{download_link}".light_green
     end
 
     def get_user_entry
@@ -47,10 +56,10 @@ class Crawler
         end
 
         puts "Would you like to create Diary entries with date of today for each movie? (It helps keeping track of future rewatcheds)\ny/n".light_magenta
-        case gets.chomp
-        when 'y'
+        case gets.chomp.downcase
+        when 'y', 'yes'
             response[:diary] = true
-        when 'n'
+        when 'n', 'no'
             response[:diary] = false
         else
             #stop execution in case of invalid option
@@ -60,6 +69,38 @@ class Crawler
         puts "Thank you.\nWait while information from #{response[:username]} is extracted.".light_green
 
         response
+    end
+
+    def initialize_transfer
+        url = "https://www.filemail.com/api/transfer/initialize"
+        response = HTTParty.post(url)
+
+        if response.parsed_response['responsestatus'] == 'OK'
+            response.parsed_response
+        else
+            abort 'ERROR - Please refresh the page and RUN the application again'.red
+        end
+    end
+
+    def add_file_transfer
+        body = { attachments: [File.open(@file)] }
+        url = "#{@transfer_data['transferurl']}?transferid=#{@transfer_data['transferid']}&transferkey=#{@transfer_data['transferkey']}"
+
+        response = HTTParty.post(url, body: body)
+        if response.parsed_response == 'No files uploaded'
+            abort 'ERROR - Please refresh the page and RUN the application again'.red
+        end
+    end
+
+    def complete_transfer
+        url = "https://www.filemail.com/api/transfer/complete?transferid=#{@transfer_data['transferid']}&transferkey=#{@transfer_data['transferkey']}"
+        response = HTTParty.post(url)
+
+        if response.parsed_response['responsestatus'] == 'OK'
+            response.parsed_response['downloadurl']
+        else
+            abort 'ERROR - Please refresh the page and RUN the application again'.red
+        end
     end
 
     def page_content(url)
