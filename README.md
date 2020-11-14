@@ -19,7 +19,7 @@
 ***Escolha entre as duas opções abaixo***
 
 **1. Rode online (sem instalação no seu computador, sem downloads pesados)**
-- Entre em https://repl.it/github/pauloralves/filmow_to_letterboxd_csv.
+- Entre em https://repl.it/@PauloAlves2/filmowtoletterboxdcsv.
 - Clique no botão `RUN`, assim que estiver disponível. 
 - Aguarde aparecer uma mensagem rosa (deve demorar uns minutos).
 - Responda as perguntas e aperte ENTER depois de cada uma.
@@ -58,7 +58,7 @@
 ***Pick one of these 2 different approaches***
 
 **1. Simply run it online (no installations, no heavy downloads)**
-- Go to https://repl.it/github/pauloralves/filmow_to_letterboxd_csv.
+- Go to https://repl.it/@PauloAlves2/filmowtoletterboxdcsv.
 - Click the `RUN` button, once it's available. 
 - Wait until a pink message appears (it should take some minutes).
 - Answer the questions and hit ENTER after each one.
