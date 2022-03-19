@@ -22,7 +22,7 @@ class Crawler
 
             crawl_pages('filmes', option[1])
             crawl_pages('curtas', option[1])
-            crawl_pages('tv', option[1])
+            crawl_pages('series', option[1])
 
             add_file_transfer
         end
